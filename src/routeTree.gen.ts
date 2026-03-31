@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterationRouteImport } from './routes/registeration'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as AppLayoutIndexRouteImport } from './routes/_appLayout/index'
 import { Route as AppLayoutProductsRouteImport } from './routes/_appLayout/products'
@@ -20,6 +21,11 @@ import { Route as AppLayoutCategoryProductsIdRouteImport } from './routes/_appLa
 const RegisterationRoute = RegisterationRouteImport.update({
   id: '/registeration',
   path: '/registeration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
@@ -55,6 +61,7 @@ const AppLayoutCategoryProductsIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/login': typeof LoginRoute
   '/registeration': typeof RegisterationRoute
   '/addCart': typeof AppLayoutAddCartRoute
   '/products': typeof AppLayoutProductsRoute
@@ -63,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/particularProduct/$id': typeof AppLayoutParticularProductIdRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/registeration': typeof RegisterationRoute
   '/addCart': typeof AppLayoutAddCartRoute
   '/products': typeof AppLayoutProductsRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/registeration': typeof RegisterationRoute
   '/_appLayout/addCart': typeof AppLayoutAddCartRoute
   '/_appLayout/products': typeof AppLayoutProductsRoute
@@ -83,6 +92,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/login'
     | '/registeration'
     | '/addCart'
     | '/products'
@@ -91,6 +101,7 @@ export interface FileRouteTypes {
     | '/particularProduct/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
     | '/registeration'
     | '/addCart'
     | '/products'
@@ -100,6 +111,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_appLayout'
+    | '/login'
     | '/registeration'
     | '/_appLayout/addCart'
     | '/_appLayout/products'
@@ -110,6 +122,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
   RegisterationRoute: typeof RegisterationRoute
 }
 
@@ -120,6 +133,13 @@ declare module '@tanstack/react-router' {
       path: '/registeration'
       fullPath: '/registeration'
       preLoaderRoute: typeof RegisterationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_appLayout': {
@@ -189,6 +209,7 @@ const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
   RegisterationRoute: RegisterationRoute,
 }
 export const routeTree = rootRouteImport

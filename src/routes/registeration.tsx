@@ -8,10 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useAuth } from "@/components/store/auth";
 
 export const Route = createFileRoute("/registeration")({
   component: RouteComponent,
@@ -64,6 +67,9 @@ type FormData = z.infer<typeof scehma>;
 //z.infer<zod schema> to get the type of the schema instead to type manually
 
 function RouteComponent() {
+  const navigate = useNavigate();
+  const { storeToken } = useAuth();
+
   const {
     register,
     control,
@@ -100,8 +106,50 @@ function RouteComponent() {
     name: "phone",
   });
 
+  const registeration = async (data: FormData) => {
+    console.log("Original Form Data:", data);
+
+    const payload = {
+      username: data.fullName, // ✅ map
+      email: data.email,
+      password: data.password,
+      phone: data.phone, // ✅ extract first number
+    };
+
+    console.log("Sending Payload:", payload);
+
+    const response = await fetch("http://localhost:8000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        resData.message || resData.extraDetails || "Registration Failed",
+      );
+    }
+
+    return resData;
+  };
+  const { mutate, isPending } = useMutation({
+    mutationFn: registeration,
+    onSuccess: (data) => {
+      toast.success("Registration Successful");
+      storeToken(data.token);
+      console.log(data, "Registration Successful");
+      navigate({ to: "/login" });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Registration Failed");
+      console.log(error, "Registration Failed");
+    },
+  });
+
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    mutate(data);
   };
 
   return (
@@ -282,8 +330,12 @@ function RouteComponent() {
         </div>
 
         <div>
-          <Button className="cursor-pointer" onSubmit={handleSubmit(onSubmit)}>
-            Submit
+          <Button
+            className="cursor-pointer"
+            onSubmit={handleSubmit(onSubmit)}
+            disabled={isPending}
+          >
+            {isPending ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

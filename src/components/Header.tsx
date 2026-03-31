@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
+import { useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ShoppingCart,
   Search,
@@ -23,36 +23,39 @@ import {
   Utensils,
   Sparkles,
   Dumbbell,
-} from 'lucide-react'
+} from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "./store/auth";
 
 export default function Header() {
+  const navigate = useNavigate();
+  const { isLoggedIn, removeToken } = useAuth();
   const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [cartCount] = useState(3)
-  const [wishlistCount] = useState(2)
-  const [notificationCount] = useState(3)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [cartCount] = useState(3);
+  const [wishlistCount] = useState(2);
+  const [notificationCount] = useState(3);
 
   // Categories with proper icons
   const categories = [
-    { label: 'Fashion', href: '/fashion', icon: Shirt },
-    { label: 'Electronics', href: '/electronics', icon: Smartphone },
-    { label: 'Bags', href: '/bags', icon: Package },
-    { label: 'Footwear', href: '/footwear', icon: Shirt },
-    { label: 'Groceries', href: '/groceries', icon: Utensils },
-    { label: 'Beauty & Wellness', href: '/beauty', icon: Sparkles },
-    { label: 'Home & Living', href: '/home', icon: Home },
-    { label: 'Sports', href: '/sports', icon: Dumbbell },
-  ]
+    { label: "Fashion", href: "/fashion", icon: Shirt },
+    { label: "Electronics", href: "/electronics", icon: Smartphone },
+    { label: "Bags", href: "/bags", icon: Package },
+    { label: "Footwear", href: "/footwear", icon: Shirt },
+    { label: "Groceries", href: "/groceries", icon: Utensils },
+    { label: "Beauty & Wellness", href: "/beauty", icon: Sparkles },
+    { label: "Home & Living", href: "/home", icon: Home },
+    { label: "Sports", href: "/sports", icon: Dumbbell },
+  ];
 
   // User menu items
   const userMenuItems = [
-    { label: 'My Account', href: '/account' },
-    { label: 'My Orders', href: '/orders' },
-    { label: 'My Wishlist', href: '/wishlist' },
-    { label: 'My Addresses', href: '/addresses' },
-  ]
+    { label: "My Account", href: "/account" },
+    { label: "My Orders", href: "/orders" },
+    { label: "My Wishlist", href: "/wishlist" },
+    { label: "My Addresses", href: "/addresses" },
+  ];
 
   return (
     <div className="sticky top-0 z-50">
@@ -64,7 +67,9 @@ export default function Header() {
               <div className="flex items-center space-x-2 bg-primary/20 px-3 py-1 rounded-full">
                 <Tag size={12} />
                 <span className="text-sm">SUMMER SALE</span>
-                <span className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">15% OFF</span>
+                <span className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
+                  15% OFF
+                </span>
               </div>
               <div className="hidden md:flex items-center space-x-4">
                 <div className="flex items-center space-x-1">
@@ -74,15 +79,24 @@ export default function Header() {
               </div>
             </div>
             <div className="flex items-center space-x-6 text-sm">
-              <Link to="/track" className="hover:text-primary-foreground/90 flex items-center space-x-1">
+              <Link
+                to="/track"
+                className="hover:text-primary-foreground/90 flex items-center space-x-1"
+              >
                 <Truck size={12} />
                 <span>Track Order</span>
               </Link>
-              <Link to="/contact" className="hover:text-primary-foreground/90 flex items-center space-x-1">
+              <Link
+                to="/contact"
+                className="hover:text-primary-foreground/90 flex items-center space-x-1"
+              >
                 <Phone size={12} />
                 <span>Contact</span>
               </Link>
-              <Link to="/security" className="hover:text-primary-foreground/90 flex items-center space-x-1">
+              <Link
+                to="/security"
+                className="hover:text-primary-foreground/90 flex items-center space-x-1"
+              >
                 <Shield size={12} />
                 <span>Secure</span>
               </Link>
@@ -103,7 +117,9 @@ export default function Header() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-primary">ShopEasy</h1>
-                <p className="text-xs text-muted-foreground">Everything You Need</p>
+                <p className="text-xs text-muted-foreground">
+                  Everything You Need
+                </p>
               </div>
             </Link>
 
@@ -136,7 +152,10 @@ export default function Header() {
               </button>
 
               {/* Wishlist */}
-              <Link to="/wishlist" className="p-2 rounded-lg hover:bg-accent transition-colors relative">
+              <Link
+                to="/wishlist"
+                className="p-2 rounded-lg hover:bg-accent transition-colors relative"
+              >
                 <Heart size={18} className="text-muted-foreground" />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-destructive text-white text-xs font-medium rounded-full w-4 h-4 flex items-center justify-center">
@@ -156,7 +175,10 @@ export default function Header() {
               </button>
 
               {/* Cart */}
-              <Link to="/addCart" className="p-2 rounded-lg hover:bg-accent transition-colors relative">
+              <Link
+                to="/addCart"
+                className="p-2 rounded-lg hover:bg-accent transition-colors relative"
+              >
                 <div className="relative">
                   <ShoppingCart size={18} className="text-muted-foreground" />
                   {cartCount > 0 && (
@@ -169,8 +191,7 @@ export default function Header() {
 
               {/* User */}
               <div className="relative">
-
-                {isAuthenticated ? (
+                {isLoggedIn ? (
                   <div className="relative">
                     {/* User button */}
                     <button
@@ -182,8 +203,9 @@ export default function Header() {
                       </div>
 
                       <ChevronDown
-                        className={`w-3 h-3 text-muted-foreground transition-transform ${isUserMenuOpen ? "rotate-180" : ""
-                          }`}
+                        className={`w-3 h-3 text-muted-foreground transition-transform ${
+                          isUserMenuOpen ? "rotate-180" : ""
+                        }`}
                       />
                     </button>
 
@@ -192,7 +214,9 @@ export default function Header() {
                       <div className="absolute right-0 mt-2 w-48 bg-popover rounded-lg shadow-lg border py-2 z-50">
                         <div className="px-3 py-2 border-b">
                           <p className="font-medium text-foreground">{`Hello ${user?.name}!`}</p>
-                          <p className="text-xs text-muted-foreground">Welcome</p>
+                          <p className="text-xs text-muted-foreground">
+                            Welcome
+                          </p>
                         </div>
 
                         {userMenuItems.map((item) => (
@@ -208,9 +232,17 @@ export default function Header() {
 
                         {/* logout */}
                         <button
-                          onClick={() =>
-                            logout({ logoutParams: { returnTo: window.location.origin } })
-                          }
+                          onClick={() => {
+                            removeToken();
+                            navigate({ to: "/login" });
+                          }}
+                          // onClick={() =>
+                          //   logout({
+                          //     logoutParams: {
+                          //       returnTo: window.location.origin,
+                          //     },
+                          //   })
+                          // }
                           className="w-full text-left px-3 py-2 text-sm hover:bg-accent cursor-pointer"
                         >
                           Logout
@@ -219,15 +251,23 @@ export default function Header() {
                     )}
                   </div>
                 ) : (
-                  <button
-                    onClick={() => loginWithRedirect()}
-                    className="button login flex items-center space-x-1 p-2 cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-1.5 rounded-md transition-colors text-sm font-medium"
+                  // <button
+                  //   onClick={() => loginWithRedirect()}
+                  //   className="button login flex items-center space-x-1 p-2 cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-1.5 rounded-md transition-colors text-sm font-medium"
+                  // >
+                  //   Log In
+                  // </button>
+                  <Link
+                    to="/login"
+                    className="button login flex items-center space-x-1 cursor-pointer
+               bg-primary hover:bg-primary/90
+               text-primary-foreground px-4 py-1.5
+               rounded-md transition-colors text-sm font-medium"
                   >
                     Log In
-                  </button>
+                  </Link>
                 )}
               </div>
-
               <div className="relative">
                 <Link
                   to="/registeration"
@@ -240,13 +280,16 @@ export default function Header() {
                 </Link>
               </div>
 
-
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="lg:hidden p-2 rounded-lg hover:bg-accent transition-colors"
               >
-                {isMenuOpen ? <X size={18} className="text-muted-foreground" /> : <Menu size={18} className="text-muted-foreground" />}
+                {isMenuOpen ? (
+                  <X size={18} className="text-muted-foreground" />
+                ) : (
+                  <Menu size={18} className="text-muted-foreground" />
+                )}
               </button>
             </div>
           </div>
@@ -264,7 +307,7 @@ export default function Header() {
               {/* Category Links */}
               <div className="flex items-center space-x-6">
                 {categories.slice(0, 6).map((category) => {
-                  const Icon = category.icon
+                  const Icon = category.icon;
                   return (
                     <Link
                       key={category.label}
@@ -274,13 +317,16 @@ export default function Header() {
                       <Icon size={16} className="text-primary" />
                       <span>{category.label}</span>
                     </Link>
-                  )
+                  );
                 })}
               </div>
             </div>
 
             {/* Today's Deal */}
-            <Link to="/deals" className="flex items-center space-x-2 bg-primary text-primary-foreground px-3 py-2 rounded-md hover:bg-primary/90 transition-colors">
+            <Link
+              to="/deals"
+              className="flex items-center space-x-2 bg-primary text-primary-foreground px-3 py-2 rounded-md hover:bg-primary/90 transition-colors"
+            >
               <Gift size={16} />
               <div>
                 <div className="text-sm font-medium">TODAY'S DEAL</div>
@@ -310,7 +356,7 @@ export default function Header() {
               {/* Categories Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                 {categories.map((category) => {
-                  const Icon = category.icon
+                  const Icon = category.icon;
                   return (
                     <Link
                       key={category.label}
@@ -319,31 +365,47 @@ export default function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Icon size={20} className="text-primary mb-2" />
-                      <span className="text-sm font-medium text-center">{category.label}</span>
+                      <span className="text-sm font-medium text-center">
+                        {category.label}
+                      </span>
                     </Link>
-                  )
+                  );
                 })}
               </div>
 
               {/* Quick Links */}
               <div className="space-y-2">
-                <Link to="/deals" className="flex items-center justify-between p-3 rounded-lg bg-accent border hover:bg-accent/80 transition-all">
+                <Link
+                  to="/deals"
+                  className="flex items-center justify-between p-3 rounded-lg bg-accent border hover:bg-accent/80 transition-all"
+                >
                   <div className="flex items-center space-x-3">
                     <Star className="text-primary" size={18} />
                     <div>
-                      <div className="font-medium text-foreground">Today's Hot Deals</div>
-                      <div className="text-sm text-muted-foreground">Up to 60% OFF</div>
+                      <div className="font-medium text-foreground">
+                        Today's Hot Deals
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Up to 60% OFF
+                      </div>
                     </div>
                   </div>
                   <ChevronDown className="text-primary" size={14} />
                 </Link>
 
-                <Link to="/new-arrivals" className="flex items-center justify-between p-3 rounded-lg bg-accent border hover:bg-accent/80 transition-all">
+                <Link
+                  to="/new-arrivals"
+                  className="flex items-center justify-between p-3 rounded-lg bg-accent border hover:bg-accent/80 transition-all"
+                >
                   <div className="flex items-center space-x-3">
                     <Tag className="text-primary" size={18} />
                     <div>
-                      <div className="font-medium text-foreground">New Arrivals</div>
-                      <div className="text-sm text-muted-foreground">Fresh Collections</div>
+                      <div className="font-medium text-foreground">
+                        New Arrivals
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Fresh Collections
+                      </div>
                     </div>
                   </div>
                   <ChevronDown className="text-primary" size={14} />
@@ -354,5 +416,5 @@ export default function Header() {
         )}
       </header>
     </div>
-  )
+  );
 }
