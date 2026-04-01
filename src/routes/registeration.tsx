@@ -15,6 +15,7 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useAuth } from "@/components/store/auth";
+import { api } from "@/api/AuthApi";
 
 export const Route = createFileRoute("/registeration")({
   component: RouteComponent,
@@ -106,33 +107,56 @@ function RouteComponent() {
     name: "phone",
   });
 
+  // const registeration = async (data: FormData) => {
+  //   console.log("Original Form Data:", data);
+
+  //   const payload = {
+  //     username: data.fullName, // ✅ map
+  //     email: data.email,
+  //     password: data.password,
+  //     phone: data.phone, // ✅ extract first number
+  //   };
+
+  //   console.log("Sending Payload:", payload);
+
+  //   const response = await fetch("http://localhost:8000/api/auth/register", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(payload),
+  //   });
+
+  //   const resData = await response.json();
+
+  //   if (!response.ok) {
+  //     throw new Error(
+  //       resData.message || resData.extraDetails || "Registration Failed",
+  //     );
+  //   }
+
+  //   return resData;
+  // };
+
   const registeration = async (data: FormData) => {
-    console.log("Original Form Data:", data);
+    try {
+      const payload = {
+        username: data.fullName, // mapping
+        email: data.email,
+        password: data.password,
+        phone: data.phone,
+      };
 
-    const payload = {
-      username: data.fullName, // ✅ map
-      email: data.email,
-      password: data.password,
-      phone: data.phone, // ✅ extract first number
-    };
+      console.log("Sending Payload:", payload);
 
-    console.log("Sending Payload:", payload);
+      const response = await api.post("/auth/register", payload);
 
-    const response = await fetch("http://localhost:8000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const resData = await response.json();
-
-    if (!response.ok) {
+      return response.data;
+    } catch (error) {
       throw new Error(
-        resData.message || resData.extraDetails || "Registration Failed",
+        error?.response?.data?.message ||
+          error?.response?.data?.extraDetails ||
+          "Registration Failed",
       );
     }
-
-    return resData;
   };
   const { mutate, isPending } = useMutation({
     mutationFn: registeration,
@@ -143,7 +167,7 @@ function RouteComponent() {
       navigate({ to: "/login" });
     },
     onError: (error) => {
-      toast.error(error.message || "Registration Failed");
+      toast.error(error.extraDetails || error.message || "Registration Failed");
       console.log(error, "Registration Failed");
     },
   });

@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useAuth } from "@/components/store/auth";
+import { api } from "@/api/AuthApi";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -31,26 +32,38 @@ function RouteComponent() {
   });
 
   // 🔥 Login API
+  // const loginUser = async (data: FormData) => {
+  //   const response = await fetch("http://localhost:8000/api/auth/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
+
+  //   const resData = await response.json();
+
+  //   if (!response.ok) {
+  //     throw new Error(
+  //       resData.extraDetails || resData.message || "Login Failed",
+  //     );
+  //   }
+
+  //   return resData;
+  // };
+
   const loginUser = async (data: FormData) => {
-    const response = await fetch("http://localhost:8000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const resData = await response.json();
-
-    if (!response.ok) {
+    try {
+      const response = await api.post("/auth/login", data);
+      return response.data;
+    } catch (error) {
       throw new Error(
-        resData.extraDetails || resData.message || "Login Failed",
+        error?.response?.data?.extraDetails ||
+          error?.response?.data?.message ||
+          "Login Failed",
       );
     }
-
-    return resData;
   };
-
   const { mutate, isPending } = useMutation({
     mutationFn: loginUser,
 

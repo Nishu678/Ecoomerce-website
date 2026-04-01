@@ -26,10 +26,13 @@ import {
 } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "./store/auth";
+import { api } from "@/api/AuthApi";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Header() {
   const navigate = useNavigate();
   const { isLoggedIn, removeToken } = useAuth();
+  const { token } = useAuth();
   const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -56,6 +59,24 @@ export default function Header() {
     { label: "My Wishlist", href: "/wishlist" },
     { label: "My Addresses", href: "/addresses" },
   ];
+
+  const fetchUser = async (token: string) => {
+    const response = await api.get("/auth/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
+
+  const { data } = useQuery({
+    queryKey: ["user", token],
+    queryFn: () => fetchUser(token),
+    enabled: !!token,
+    retry: 1,
+  });
+
+  console.log("User login data", data);
 
   return (
     <div className="sticky top-0 z-50">
@@ -213,7 +234,9 @@ export default function Header() {
                     {isUserMenuOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-popover rounded-lg shadow-lg border py-2 z-50">
                         <div className="px-3 py-2 border-b">
-                          <p className="font-medium text-foreground">{`Hello ${user?.name}!`}</p>
+                          <p className="font-medium text-foreground">{`Hello ${
+                            data?.username || "User"
+                          }!`}</p>
                           <p className="text-xs text-muted-foreground">
                             Welcome
                           </p>
