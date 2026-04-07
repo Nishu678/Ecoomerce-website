@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterationRouteImport } from './routes/registeration'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AppLayoutIndexRouteImport } from './routes/_appLayout/index'
 import { Route as AppLayoutProductsRouteImport } from './routes/_appLayout/products'
 import { Route as AppLayoutAddCartRouteImport } from './routes/_appLayout/addCart'
@@ -28,9 +30,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
   id: '/_appLayout',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AppLayoutIndexRoute = AppLayoutIndexRouteImport.update({
   id: '/',
@@ -61,11 +73,13 @@ const AppLayoutCategoryProductsIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/registeration': typeof RegisterationRoute
   '/addCart': typeof AppLayoutAddCartRoute
   '/products': typeof AppLayoutProductsRoute
   '/': typeof AppLayoutIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/categoryProducts/$id': typeof AppLayoutCategoryProductsIdRoute
   '/particularProduct/$id': typeof AppLayoutParticularProductIdRoute
 }
@@ -75,28 +89,33 @@ export interface FileRoutesByTo {
   '/addCart': typeof AppLayoutAddCartRoute
   '/products': typeof AppLayoutProductsRoute
   '/': typeof AppLayoutIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/categoryProducts/$id': typeof AppLayoutCategoryProductsIdRoute
   '/particularProduct/$id': typeof AppLayoutParticularProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/registeration': typeof RegisterationRoute
   '/_appLayout/addCart': typeof AppLayoutAddCartRoute
   '/_appLayout/products': typeof AppLayoutProductsRoute
   '/_appLayout/': typeof AppLayoutIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/_appLayout/categoryProducts/$id': typeof AppLayoutCategoryProductsIdRoute
   '/_appLayout/particularProduct/$id': typeof AppLayoutParticularProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/admin'
     | '/login'
     | '/registeration'
     | '/addCart'
     | '/products'
     | '/'
+    | '/admin/'
     | '/categoryProducts/$id'
     | '/particularProduct/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -106,22 +125,26 @@ export interface FileRouteTypes {
     | '/addCart'
     | '/products'
     | '/'
+    | '/admin'
     | '/categoryProducts/$id'
     | '/particularProduct/$id'
   id:
     | '__root__'
     | '/_appLayout'
+    | '/admin'
     | '/login'
     | '/registeration'
     | '/_appLayout/addCart'
     | '/_appLayout/products'
     | '/_appLayout/'
+    | '/admin/'
     | '/_appLayout/categoryProducts/$id'
     | '/_appLayout/particularProduct/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterationRoute: typeof RegisterationRoute
 }
@@ -142,12 +165,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_appLayout': {
       id: '/_appLayout'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AppLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_appLayout/': {
       id: '/_appLayout/'
@@ -207,8 +244,21 @@ const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
   AppLayoutRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterationRoute: RegisterationRoute,
 }

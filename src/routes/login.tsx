@@ -57,9 +57,11 @@ function RouteComponent() {
       const response = await api.post("/auth/login", data);
       return response.data;
     } catch (error) {
+      console.log("RESPONSE 👉", error?.response);
+      console.log("DATA 👉", error?.response?.data?.message);
       throw new Error(
-        error?.response?.data?.extraDetails ||
-          error?.response?.data?.message ||
+        error?.response?.data?.message ||
+          error?.response?.data?.extraDetails ||
           "Login Failed",
       );
     }

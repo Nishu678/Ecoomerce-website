@@ -151,9 +151,11 @@ function RouteComponent() {
 
       return response.data;
     } catch (error) {
+      console.log("RESPONSE 👉", error?.response);
+      console.log("DATA 👉", error?.response?.data?.extraDetails);
       throw new Error(
-        error?.response?.data?.message ||
-          error?.response?.data?.extraDetails ||
+        error?.response?.data?.extraDetails ||
+          error?.response?.data?.message ||
           "Registration Failed",
       );
     }
@@ -164,7 +166,7 @@ function RouteComponent() {
       toast.success("Registration Successful");
       storeToken(data.token);
       console.log(data, "Registration Successful");
-      navigate({ to: "/login" });
+      navigate({ to: "/" });
     },
     onError: (error) => {
       toast.error(error.extraDetails || error.message || "Registration Failed");

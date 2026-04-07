@@ -40,6 +40,24 @@ export default function Header() {
   const [wishlistCount] = useState(2);
   const [notificationCount] = useState(3);
 
+  const fetchUser = async (token: string) => {
+    const response = await api.get("/auth/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
+
+  const { data } = useQuery({
+    queryKey: ["user", token],
+    queryFn: () => fetchUser(token),
+    enabled: !!token,
+    retry: 1,
+  });
+
+  console.log("User login data", data);
+
   // Categories with proper icons
   const categories = [
     { label: "Fashion", href: "/fashion", icon: Shirt },
@@ -59,24 +77,6 @@ export default function Header() {
     { label: "My Wishlist", href: "/wishlist" },
     { label: "My Addresses", href: "/addresses" },
   ];
-
-  const fetchUser = async (token: string) => {
-    const response = await api.get("/auth/user", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  };
-
-  const { data } = useQuery({
-    queryKey: ["user", token],
-    queryFn: () => fetchUser(token),
-    enabled: !!token,
-    retry: 1,
-  });
-
-  console.log("User login data", data);
 
   return (
     <div className="sticky top-0 z-50">
@@ -280,27 +280,28 @@ export default function Header() {
                   // >
                   //   Log In
                   // </button>
-                  <Link
-                    to="/login"
-                    className="button login flex items-center space-x-1 cursor-pointer
+                  <div className="flex gap-2">
+                    <Link
+                      to="/login"
+                      className="button login flex items-center space-x-1 cursor-pointer
                bg-primary hover:bg-primary/90
                text-primary-foreground px-4 py-1.5
                rounded-md transition-colors text-sm font-medium"
-                  >
-                    Log In
-                  </Link>
+                    >
+                      Log In
+                    </Link>
+
+                    <Link
+                      to="/registeration"
+                      className="button login flex items-center space-x-1 cursor-pointer
+               bg-primary hover:bg-primary/90
+               text-primary-foreground px-4 py-1.5
+               rounded-md transition-colors text-sm font-medium"
+                    >
+                      Register
+                    </Link>
+                  </div>
                 )}
-              </div>
-              <div className="relative">
-                <Link
-                  to="/registeration"
-                  className="button login flex items-center space-x-1 cursor-pointer
-               bg-primary hover:bg-primary/90
-               text-primary-foreground px-4 py-1.5
-               rounded-md transition-colors text-sm font-medium"
-                >
-                  Register
-                </Link>
               </div>
 
               {/* Mobile Menu Button */}
