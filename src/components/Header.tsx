@@ -33,7 +33,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { isLoggedIn, removeToken } = useAuth();
   const { token } = useAuth();
-  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+  // const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [cartCount] = useState(3);

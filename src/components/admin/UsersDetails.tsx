@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import UpdateUser from "./UpdateUser";
+import { TableSkeleton } from "../common/TableSkelton";
 
 type User = {
   _id: number;
@@ -97,10 +98,6 @@ const UsersDetails = () => {
     setSelectedUser(null);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <>
       <Card className="bg-white border border-gray-200 rounded-xl shadow-sm gap-0 ">
@@ -140,89 +137,79 @@ const UsersDetails = () => {
 
               {/* Body */}
               <TableBody>
-                {usersData?.map((user: User, index: number) => (
-                  <TableRow
-                    key={index}
-                    className="border-b hover:bg-gray-50 transition"
-                  >
-                    {/* Name */}
-                    <TableCell className="px-6 font-medium text-gray-800">
-                      {user.username || "-"}
-                    </TableCell>
-
-                    {/* Email */}
-                    <TableCell className="px-6 text-gray-500">
-                      {user.email || "-"}
-                    </TableCell>
-
-                    {/* Role */}
-                    <TableCell className="px-6">
-                      <Badge
-                        variant="secondary"
-                        className={`px-3 py-1 text-xs rounded-full font-medium ${getRoleStyle(
-                          user.isAdmin,
-                        )}`}
-                      >
-                        {user.isAdmin ? "Admin" : "User"}
-                      </Badge>
-                    </TableCell>
-
-                    {/* Status */}
-                    <TableCell className="px-6">
-                      {user?.phone?.length > 0
-                        ? user.phone.map((p) => p.number).join(", ")
-                        : "-"}
-                    </TableCell>
-
-                    {/* <TableCell className="px-6">
-                    <span
-                      className={`px-3 py-1 text-xs rounded-full font-medium ${getStatusStyle(
-                        user.status,
-                      )}`}
+                {isLoading ? (
+                  <TableSkeleton rows={5} cols={5} />
+                ) : usersData?.length > 0 ? (
+                  usersData.map((user: User, index: number) => (
+                    <TableRow
+                      key={index}
+                      className="border-b hover:bg-gray-50 transition"
                     >
-                      {user.status || "-"}
-                    </span>
-                  </TableCell> */}
+                      {/* Name */}
+                      <TableCell className="px-6 font-medium text-gray-800">
+                        {user.username || "-"}
+                      </TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="px-6 ">
-                      <div className="flex gap-2">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 text-yellow-500 border-yellow-200 hover:bg-yellow-50"
-                          onClick={() => {
-                            setOpenUpdateModal(true);
-                            setSelectedUser(user);
-                          }}
+                      {/* Email */}
+                      <TableCell className="px-6 text-gray-500">
+                        {user.email || "-"}
+                      </TableCell>
+
+                      {/* Role */}
+                      <TableCell className="px-6">
+                        <Badge
+                          variant="secondary"
+                          className={`px-3 py-1 text-xs rounded-full font-medium ${getRoleStyle(
+                            user.isAdmin,
+                          )}`}
                         >
-                          <Pencil size={14} />
-                        </Button>
+                          {user.isAdmin ? "Admin" : "User"}
+                        </Badge>
+                      </TableCell>
 
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 text-red-500 border-red-200 hover:bg-red-50"
-                          onClick={() => {
-                            setOpenDeleteModal(true);
-                            setSelectedUser(user);
-                          }}
-                        >
-                          <Trash2 size={14} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      {/* Phone */}
+                      <TableCell className="px-6">
+                        {user?.phone?.length > 0
+                          ? user.phone.map((p) => p.number).join(", ")
+                          : "-"}
+                      </TableCell>
 
-                {/* Empty State */}
-                {usersData?.length === 0 && (
+                      {/* Actions */}
+                      <TableCell className="px-6">
+                        <div className="flex gap-2">
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-8 w-8 text-yellow-500 border-yellow-200 hover:bg-yellow-50"
+                            onClick={() => {
+                              setOpenUpdateModal(true);
+                              setSelectedUser(user);
+                            }}
+                          >
+                            <Pencil size={14} />
+                          </Button>
+
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-8 w-8 text-red-500 border-red-200 hover:bg-red-50"
+                            onClick={() => {
+                              setOpenDeleteModal(true);
+                              setSelectedUser(user);
+                            }}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
                   <TableRow>
-                    <TableCell
-                      colSpan={5}
-                      className="text-center py-10 text-gray-400"
-                    >
-                      No users found
+                    <TableCell colSpan={5}>
+                      <div className="min-h-[200px] flex items-center justify-center text-gray-400">
+                        No users found
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

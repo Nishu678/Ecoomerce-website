@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/components/store/auth";
 import UpdateUserContact from "./UpdateUserContact";
+import { TableSkeleton } from "../common/TableSkelton";
 
 type User = {
   _id: number;
@@ -84,9 +85,6 @@ const UserContacts = () => {
     setSelectedUser(null);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   return (
     <>
       <Card className="bg-white border border-gray-200 rounded-xl shadow-sm gap-0 h-full">
@@ -121,60 +119,63 @@ const UserContacts = () => {
 
               {/* Body */}
               <TableBody>
-                {contactsData?.map((user: User, index: number) => (
-                  <TableRow
-                    key={index}
-                    className="border-b hover:bg-gray-50 transition"
-                  >
-                    {/* Name */}
-                    <TableCell className="px-6 font-medium text-gray-800">
-                      {user.username || "-"}
-                    </TableCell>
+                {isLoading ? (
+                  <TableSkeleton rows={5} cols={4} />
+                ) : contactsData?.length > 0 ? (
+                  contactsData.map((user: User, index: number) => (
+                    <TableRow
+                      key={index}
+                      className="border-b hover:bg-gray-50 transition"
+                    >
+                      {/* Name */}
+                      <TableCell className="px-6 font-medium text-gray-800">
+                        {user.username || "-"}
+                      </TableCell>
 
-                    {/* Email */}
-                    <TableCell className="px-6 text-gray-500">
-                      {user.email || "-"}
-                    </TableCell>
-                    <TableCell className="px-6 text-gray-500">
-                      {user.message || "-"}
-                    </TableCell>
+                      {/* Email */}
+                      <TableCell className="px-6 text-gray-500">
+                        {user.email || "-"}
+                      </TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="px-6 ">
-                      <div className="flex gap-2">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 text-yellow-500 border-yellow-200 hover:bg-yellow-50"
-                          onClick={() => {
-                            setOpenUpdateModal(true);
-                            setSelectedUser(user);
-                          }}
-                        >
-                          <Pencil size={14} />
-                        </Button>
+                      {/* Message */}
+                      <TableCell className="px-6 text-gray-500">
+                        {user.message || "-"}
+                      </TableCell>
 
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 text-red-500 border-red-200 hover:bg-red-50"
-                          onClick={() => {
-                            setOpenDeleteModal(true);
-                            setSelectedUser(user);
-                          }}
-                        >
-                          <Trash2 size={14} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      {/* Actions */}
+                      <TableCell className="px-6">
+                        <div className="flex gap-2">
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-8 w-8 text-yellow-500 border-yellow-200 hover:bg-yellow-50"
+                            onClick={() => {
+                              setOpenUpdateModal(true);
+                              setSelectedUser(user);
+                            }}
+                          >
+                            <Pencil size={14} />
+                          </Button>
 
-                {/* Empty State */}
-                {contactsData?.length === 0 && (
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-8 w-8 text-red-500 border-red-200 hover:bg-red-50"
+                            onClick={() => {
+                              setOpenDeleteModal(true);
+                              setSelectedUser(user);
+                            }}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={5}
+                      colSpan={4}
                       className="text-center py-10 text-gray-400"
                     >
                       No Contacts found

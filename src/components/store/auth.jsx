@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn,
         removeToken,
         token,
-        authorizationHeader,
       }}
     >
       {children}
