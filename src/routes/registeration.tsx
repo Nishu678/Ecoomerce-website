@@ -150,7 +150,8 @@ function RouteComponent() {
       const response = await api.post("/auth/register", payload);
 
       return response.data;
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log("RESPONSE 👉", error?.response);
       console.log("DATA 👉", error?.response?.data?.extraDetails);
       throw new Error(
@@ -168,7 +169,8 @@ function RouteComponent() {
       console.log(data, "Registration Successful");
       navigate({ to: "/" });
     },
-    onError: (error) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
       toast.error(error.extraDetails || error.message || "Registration Failed");
       console.log(error, "Registration Failed");
     },
